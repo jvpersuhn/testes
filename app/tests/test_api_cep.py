@@ -20,16 +20,16 @@ class TesteApiCep(TestCase):
     def test_ApiCep_execute(self, mock_get_somente_numeros, mock_request_get):
         apiCep = ApiCep()
 
-        apiCep.json = MagicMock(return_value={'teste' : 'teste'})
-
         mock_get_somente_numeros.return_value = '89050050'
         mock_request_get.return_value.json.return_value = {'teste' : 'teste'}
+
+        mock_request_get.return_value.json = Mock(return_value={'teste' : 'teste'})
 
         resultado = apiCep.execute('89050-050')
 
         self.assertEqual({'teste' : 'teste'},resultado)
 
-        apiCep.json.assert_called_once()
+        mock_request_get.return_value.json.assert_called_once()
 
         mock_get_somente_numeros.assert_called_once_with('89050-050')
         mock_request_get.assert_called_once_with('http://www.viacep.com.br/ws/89050050/json/')
